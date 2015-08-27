@@ -2,31 +2,34 @@
 
 /**
  * Quotes Widget
- * 
  *
  * @author Mark Coppock <mark@coppock.com>
  * @copyright Copyright () 2012
- * @version v 1.0 2012-12-28 11:00:00 GMT
+ * @version v 0.15 2015-08-26 03:38:00 GMT
  */
 
-add_action( 'widgets_init', create_function( '', 'register_widget("Quotes_Widget");' ) );
+add_action( 'widgets_init', 'extended_quotes_register_widget' );
+function extended_quotes_register_widget() {
+	register_widget( 'Quotes_Widget' );
+}
 
-class Quotes_Widget extends WP_Widget {
+class Quotes_Widget extends \WP_Widget {
 
+    /**
+	 * Register widget with WordPress.
+	 */
+	function __construct() {
+		parent::__construct(
+			'widget_quotes', // Base ID
+			__( 'Quotes', 'extended_quotes' ), // Name
+			array( 'description' => __( 'A list of Quotations', 'extended_quotes' ), ) // Args
+		);
+	}
 
-	/** constructor */
-    function Quotes_Widget() {
-        //parent::WP_Widget(false, $name = 'Reed Arena Events CPT Widget');	
-        $widget_ops = array('classname' => 'widget_quotes', 'description' => __( 'A list of Quotations') );
-        $this->WP_Widget('quote', __('Quotes'), $widget_ops);
-    }
-
-    function widget( $args, $instance ) {
+    public function widget( $args, $instance ) {
 		extract($args);
 		$title = apply_filters('widget_title', empty($instance['title']) ? '&nbsp;' : $instance['title'], $instance, $this->id_base);
 		echo $before_widget;
-		//if ( $title ) echo $before_title . $title . $after_title;
-
 		
 		echo '<div id="quotes_wrap">';
 		echo '<h4>Random Quotations</h4>';
@@ -35,13 +38,9 @@ class Quotes_Widget extends WP_Widget {
 		$args = array('post_type' => 'quote', 'posts_per_page' => '1', 'orderby' => 'rand');
 		$quotations = new WP_Query( $args );
 
-		
-
 		while ( $quotations->have_posts()) : $quotations->the_post();
 
 			global $post;
-
-
 
 			$quotesource = get_post_meta( $post->ID, '_quote_source', true);
 			//$quoteauthor = term_clean($post->ID, 'quoteauthor');
@@ -54,30 +53,19 @@ class Quotes_Widget extends WP_Widget {
 				foreach ( $quoteauthors as $quoteauthor ) {
 					$authorlist[] = $quoteauthor->name;
 				}
-
 				$extractedauthor = join(", ", $authorlist );
-
 			endif;
 
-
-
 			?>
-			<h5 style="font-size:12px; font-weight:bold; color:#555; font-style:italic;"><?php the_title(); ?></h5>
+			<h5 style="font-size:15px; font-weight:bold; color:#555; font-style:italic;"><?php the_title(); ?></h5>
 			<?php the_content(); ?>
 			<cite style="text-align:right;margin:-10px 1em 0 0;display:block;"> 
-
 			<?php 
 			
 			//echo get_the_terms( $post->ID, 'quoteauthor' );
 			echo $extractedauthor;
 
-			if ( $quotesource ) echo ' <a href="' . $quotesource . '">(link)</a></cite>'; 
-			
-
-
-
-
-		
+			if ( $quotesource ) echo ' <a href="' . $quotesource . '">(link)</a></cite>'; 	
 		endwhile;
 		wp_reset_postdata();
 		echo '</div>';
@@ -88,9 +76,5 @@ class Quotes_Widget extends WP_Widget {
 		// 	$terms = get_the_terms($postid, $term); 
 	 //    	foreach ($terms as $term) {  echo $term->name;   };
 		// }
-
 	}
-
-	
-	
 }

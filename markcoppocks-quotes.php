@@ -42,7 +42,7 @@ function post_type_quotes() {
 		'show_ui' => true,
 		'register_meta_box_cb' => 'quote_meta_boxes',
 		'capability_type' => 'post',
-		'menu_icon' => plugins_url( '/inc/img/quote_menu.png', __FILE__ ),
+		'menu_icon' => 'dashicons-editor-quote',
 		'hierarchical' => false,
 		'rewrite' => false,
 		'query_var' => true,
@@ -146,3 +146,5 @@ function quote_taxonomy_custom_columns($defaults) {
 	
 	return $defaults;
 }
+
+include_once( 'quotes-widget.php' );
