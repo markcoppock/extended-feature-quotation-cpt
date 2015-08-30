@@ -32,7 +32,7 @@ class Quotes_Widget extends \WP_Widget {
 		echo $before_widget;
 		
 		echo '<div id="quotes_wrap">';
-		echo '<h4>Random Quotations</h4>';
+		echo '<h2 class="widget-title extended-quotation">Random Quotations</h2>';
 
 		// http://stackoverflow.com/questions/11601038/in-wordpress-how-do-i-display-a-single-random-post-of-a-custom-post-type-in-a-s
 		$args = array('post_type' => 'quote', 'posts_per_page' => '1', 'orderby' => 'rand');
@@ -57,15 +57,15 @@ class Quotes_Widget extends \WP_Widget {
 			endif;
 
 			?>
-			<h5 style="font-size:15px; font-weight:bold; color:#555; font-style:italic;"><?php the_title(); ?></h5>
+			<h3><?php the_title(); ?></h3>
 			<?php the_content(); ?>
 			<cite style="text-align:right;margin:-10px 1em 0 0;display:block;"> 
 			<?php 
 			
 			//echo get_the_terms( $post->ID, 'quoteauthor' );
+			if ( $quotesource )  { echo ' <a href="' . $quotesource . '">'; }
 			echo $extractedauthor;
-
-			if ( $quotesource ) echo ' <a href="' . $quotesource . '">(link)</a></cite>'; 	
+			if ( $quotesource ) { echo '</a></cite>'; }	
 		endwhile;
 		wp_reset_postdata();
 		echo '</div>';
